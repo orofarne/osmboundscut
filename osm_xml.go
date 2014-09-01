@@ -1,5 +1,7 @@
 package main
 
+import "encoding/xml"
+
 // http://wiki.openstreetmap.org/wiki/OSM_XML
 
 // OSM ids
@@ -7,7 +9,9 @@ type Idtype uint64
 
 // <osm version="0.6" generator="CGImap 0.0.2">
 type Osm struct {
+	XMLName   xml.Name   `xml:"osm"`
 	Version   string     `xml:"version,attr"`
+	Generator string     `xml:"generator,attr"`
 	Bounds    Bounds     `xml:"bounds"`
 	Nodes     []Node     `xml:"node"`
 	Ways      []Way      `xml:"way"`
@@ -24,10 +28,16 @@ type Bounds struct {
 
 // <node id="298884269" lat="54.0901746" lon="12.2482632" user="SvenHRO" uid="46882" visible="true" version="1" changeset="676636" timestamp="2008-09-21T21:37:45Z"/>
 type Node struct {
-	Id   Idtype  `xml:"id,attr"`
-	Lat  float64 `xml:"lat,attr"`
-	Lon  float64 `xml:"lon,attr"`
-	Tags []Tag   `xml:"tag"`
+	Id        Idtype  `xml:"id,attr"`
+	Lat       float64 `xml:"lat,attr"`
+	Lon       float64 `xml:"lon,attr"`
+	User      string  `xml:"user,attr"`
+	Uid       Idtype  `xml:"uid,attr"`
+	Visible   bool    `xml:"visible,attr"`
+	Version   string  `xml:"version,attr"`
+	Changeset Idtype  `xml:"changeset,attr"`
+	Timestamp string  `xml:"timestamp,attr"`
+	Tags      []Tag   `xml:"tag"`
 }
 
 // <tag k="name" v="Neu Broderstorf"/>
@@ -38,9 +48,15 @@ type Tag struct {
 
 // <way id="26659127" user="Masch" uid="55988" visible="true" version="5" changeset="4142606" timestamp="2010-03-16T11:47:08Z">
 type Way struct {
-	Id   Idtype `xml:"id,attr"`
-	Nds  []Nd   `xml:"nd"`
-	Tags []Tag  `xml:"tag"`
+	Id        Idtype `xml:"id,attr"`
+	Nds       []Nd   `xml:"nd"`
+	User      string `xml:"user,attr"`
+	Uid       Idtype `xml:"uid,attr"`
+	Visible   bool   `xml:"visible,attr"`
+	Version   string `xml:"version,attr"`
+	Changeset Idtype `xml:"changeset,attr"`
+	Timestamp string `xml:"timestamp,attr"`
+	Tags      []Tag  `xml:"tag"`
 }
 
 // <nd ref="292403538"/>
@@ -50,9 +66,15 @@ type Nd struct {
 
 // <relation id="56688" user="kmvar" uid="56190" visible="true" version="28" changeset="6947637" timestamp="2011-01-12T14:23:49Z">
 type Relation struct {
-	Id      Idtype   `xml:"id,attr"`
-	Members []Member `xml:"member"`
-	Tags    []Tag    `xml:"tag"`
+	Id        Idtype   `xml:"id,attr"`
+	User      string   `xml:"user,attr"`
+	Uid       Idtype   `xml:"uid,attr"`
+	Visible   bool     `xml:"visible,attr"`
+	Version   string   `xml:"version,attr"`
+	Changeset Idtype   `xml:"changeset,attr"`
+	Timestamp string   `xml:"timestamp,attr"`
+	Members   []Member `xml:"member"`
+	Tags      []Tag    `xml:"tag"`
 }
 
 // <member type="node" ref="294942404" role=""/>
