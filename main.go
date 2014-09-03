@@ -52,6 +52,9 @@ func main() {
 	if err := CutWays(data); err != nil {
 		log.Fatalf("CutWays error: %v", err)
 	}
+	if err := FilterNodes(data); err != nil {
+		log.Fatalf("FilterNodes error: %v", err)
+	}
 	data.Generator = APP_NAME
 	if err := writeXml(*outputFile, data); err != nil {
 		log.Fatalf("Failed to write xml: %v", err)
