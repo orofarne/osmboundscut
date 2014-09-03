@@ -95,6 +95,11 @@ func dropWay(data *Osm, way *Way) error {
 	return fmt.Errorf("Way not found")
 }
 
+func validateTail(data *Osm, nds []Nd, boundNodes [4]*Node) ([]Nd, error) {
+	// TODO
+	return nds, nil
+}
+
 func cutWay(data *Osm, way *Way, boundNodes [4]*Node) error {
 	if len(way.Nds) == 0 {
 		dropWay(data, way)
@@ -131,7 +136,11 @@ func cutWay(data *Osm, way *Way, boundNodes [4]*Node) error {
 				newWay = append(newWay, Nd{Ref: appendNode(data, n).Id})
 			}
 			// Validate tail
-			// TODO
+			newWay, err = validateTail(data, newWay, boundNodes)
+			if err != nil {
+				return err
+			}
+			// Check bounds
 			if len(xNodes) == 1 {
 				inBBox = !inBBox
 			}
