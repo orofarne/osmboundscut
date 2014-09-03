@@ -158,6 +158,10 @@ func cutWay(data *Osm, way *Way, boundNodes [4]*Node) error {
 			for _, n := range xNodes {
 				newWay = append(newWay, Nd{Ref: appendNode(data, n).Id})
 			}
+			// If current node in bbox append it to way
+			if (inBBox && len(xNodes) == 2) || (!inBBox && len(xNodes) == 1) {
+				newWay = append(newWay, Nd{Ref: curNode.Id})
+			}
 			// Validate tail
 			if closedWay {
 				newWay, err = validateTail(data, newWay, boundNodes)
@@ -178,7 +182,7 @@ func cutWay(data *Osm, way *Way, boundNodes [4]*Node) error {
 		return nil
 	}
 	// Closed way
-	if closedWay {
+	if closedWay && newWay[0].Ref != newWay[len(newWay)-1].Ref {
 		newWay = append(newWay, newWay[0])
 		var err error
 		newWay, err = validateTail(data, newWay, boundNodes)

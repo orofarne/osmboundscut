@@ -19,13 +19,13 @@ func appendNode(data *Osm, node Node) *Node {
 }
 
 func nodeInBounds(bounds *Bounds, node *Node) bool {
-	if node.Lat < bounds.MinLat || node.Lat > bounds.MaxLat {
+	if lt(node.Lat, bounds.MinLat) || gt(node.Lat, bounds.MaxLat) {
 		return false
 	}
-	if bounds.MaxLon >= bounds.MinLon && (node.Lon < bounds.MinLon || node.Lon > bounds.MaxLon) {
+	if bounds.MaxLon >= bounds.MinLon && (lt(node.Lon, bounds.MinLon) || gt(node.Lon, bounds.MaxLon)) {
 		return false
 	}
-	if bounds.MaxLon < bounds.MinLon && (node.Lon < bounds.MinLon && node.Lon > bounds.MaxLon) {
+	if bounds.MaxLon < bounds.MinLon && (lt(node.Lon, bounds.MinLon) && gt(node.Lon, bounds.MaxLon)) {
 		return false
 	}
 	return true
