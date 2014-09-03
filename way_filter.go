@@ -96,7 +96,28 @@ func dropWay(data *Osm, way *Way) error {
 }
 
 func validateTail(data *Osm, nds []Nd, boundNodes [4]*Node) ([]Nd, error) {
-	// TODO
+	if len(nds) < 2 {
+		return nds, nil
+	}
+	p1 := getNode(data, nds[len(nds)-2].Ref)
+	if p1 == nil {
+		return nds, fmt.Errorf("Node %v not found", nds[len(nds)-2].Ref)
+	}
+	p2 := getNode(data, nds[len(nds)-1].Ref)
+	if p2 == nil {
+		return nds, fmt.Errorf("Node %v not found", nds[len(nds)-1].Ref)
+	}
+	if ne(p1.Lon, p2.Lon) && ne(p1.Lat, p2.Lat) {
+		for _, bNode := range boundNodes {
+			if (eq(bNode.Lon, p1.Lon) && eq(bNode.Lat, p2.Lat)) ||
+				(eq(bNode.Lon, p2.Lon) && eq(bNode.Lat, p1.Lat)) {
+				bNd := Nd{
+					Ref: bNode.Id,
+				}
+				return append(nds[:len(nds)-1], bNd, nds[len(nds)-1]), nil
+			}
+		}
+	}
 	return nds, nil
 }
 
@@ -115,6 +136,8 @@ func cutWay(data *Osm, way *Way, boundNodes [4]*Node) error {
 	if inBBox {
 		newWay = append(newWay, Nd{Ref: prevNode.Id})
 	}
+
+	closedWay := way.Nds[0].Ref == way.Nds[len(way.Nds)-1].Ref
 
 	for i := 1; i < len(way.Nds); i++ {
 		curNode := getNode(data, way.Nds[i].Ref)
@@ -136,9 +159,11 @@ func cutWay(data *Osm, way *Way, boundNodes [4]*Node) error {
 				newWay = append(newWay, Nd{Ref: appendNode(data, n).Id})
 			}
 			// Validate tail
-			newWay, err = validateTail(data, newWay, boundNodes)
-			if err != nil {
-				return err
+			if closedWay {
+				newWay, err = validateTail(data, newWay, boundNodes)
+				if err != nil {
+					return err
+				}
 			}
 			// Check bounds
 			if len(xNodes) == 1 {
@@ -153,8 +178,13 @@ func cutWay(data *Osm, way *Way, boundNodes [4]*Node) error {
 		return nil
 	}
 	// Closed way
-	if way.Nds[0].Ref == way.Nds[len(way.Nds)-1].Ref {
+	if closedWay {
 		newWay = append(newWay, newWay[0])
+		var err error
+		newWay, err = validateTail(data, newWay, boundNodes)
+		if err != nil {
+			return err
+		}
 	}
 	way.Nds = newWay
 	return nil

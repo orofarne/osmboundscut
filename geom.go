@@ -14,6 +14,16 @@ func lt(a, b float64) bool {
 	return b-a > EPS
 }
 
+// a == b
+func eq(a, b float64) bool {
+	return math.Abs(a-b) < EPS
+}
+
+// a != b
+func ne(a, b float64) bool {
+	return math.Abs(a-b) > EPS
+}
+
 // Search crosspoint of two lines
 // First line: points (x11, y11), (x12, y12)
 // Second line: points (x21, y21), (x22, y22)
