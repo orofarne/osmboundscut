@@ -1,1 +1,4 @@
 osmboundscut
+_vendor
+
+*.swp

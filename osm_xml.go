@@ -5,7 +5,7 @@ import "encoding/xml"
 // http://wiki.openstreetmap.org/wiki/OSM_XML
 
 // OSM ids
-type Idtype uint64
+type Idtype int64
 
 // <osm version="0.6" generator="CGImap 0.0.2">
 type Osm struct {

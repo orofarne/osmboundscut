@@ -1,1 +1,4 @@
 gom 'github.com/davecgh/go-spew/spew'
+group :test do
+	gom 'gopkg.in/check.v1'
+end
